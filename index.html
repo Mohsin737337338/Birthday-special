@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>A Message For You</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose:    #c9748a;
+    --gold:    #d4a96a;
+    --cream:   #fdf6ee;
+    --deep:    #1a0a10;
+    --mid:     #3b1a24;
+    --blush:   #f0d6db;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    cursor: default;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ─── CANVAS PARTICLES ─── */
+  #particles {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── LANDING SCREEN ─── */
+  #landing {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 10;
+    background: radial-gradient(ellipse at 50% 40%, #3b1a24 0%, #1a0a10 70%);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  #landing.hide {
+    opacity: 0;
+    transform: scale(1.06);
+    pointer-events: none;
+  }
+
+  .envelope-wrap {
+    position: relative;
+    width: 220px; height: 160px;
+    margin-bottom: 40px;
+    animation: floatEnv 4s ease-in-out infinite;
+  }
+  @keyframes floatEnv {
+    0%,100% { transform: translateY(0px) rotate(-1deg); }
+    50%      { transform: translateY(-14px) rotate(1deg); }
+  }
+
+  .envelope {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .env-body {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #4a2030 0%, #2e1020 100%);
+    border-radius: 4px 4px 8px 8px;
+    border: 1.5px solid #7a3a4a;
+    box-shadow: 0 12px 40px #0008, 0 0 60px #c9748a18;
+    overflow: hidden;
+  }
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(160deg, #5a2535 0%, #3b1a24 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-bottom: 1px solid #7a3a4a66;
+    transform-origin: top center;
+    animation: flapWave 5s ease-in-out infinite;
+  }
+  @keyframes flapWave {
+    0%,100% { transform: rotateX(0deg); }
+    50%      { transform: rotateX(10deg); }
+  }
+  .env-seal {
+    position: absolute;
+    top: 38%; left: 50%; transform: translate(-50%, -50%);
+    width: 36px; height: 36px;
+    background: radial-gradient(circle, #d4a96a, #b07a3a);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 12px #d4a96a55;
+    animation: sealPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes sealPulse {
+    0%,100% { box-shadow: 0 2px 12px #d4a96a55; }
+    50%      { box-shadow: 0 2px 24px #d4a96aaa; }
+  }
+
+  .landing-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #c9748a88;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: fadeSlideUp 1.2s ease both 0.3s;
+  }
+  .landing-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 9vw, 3.2rem);
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.3;
+    padding: 0 24px;
+    animation: fadeSlideUp 1.2s ease both 0.6s;
+    text-shadow: 0 0 40px #c9748a66;
+  }
+  .landing-hint {
+    margin-top: 10px;
+    font-size: 13px;
+    font-style: italic;
+    color: #c9748a99;
+    animation: fadeSlideUp 1.2s ease both 0.9s;
+  }
+
+  .open-btn {
+    margin-top: 44px;
+    padding: 16px 40px;
+    background: transparent;
+    border: 1.5px solid var(--rose);
+    color: var(--rose);
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlideUp 1.2s ease both 1.2s;
+  }
+  .open-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--rose);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+  .open-btn:hover::before,
+  .open-btn:active::before { transform: scaleX(1); }
+  .open-btn:hover,
+  .open-btn:active { color: #fff; box-shadow: 0 0 30px #c9748a44; }
+
+  /* ─── LETTER PAGE ─── */
+  #letter-page {
+    position: relative;
+    z-index: 5;
+    min-height: 100vh;
+    padding: 0 0 80px;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.2s;
+  }
+  #letter-page.visible { opacity: 1; }
+
+  /* top gold ribbon */
+  .ribbon {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin-bottom: 0;
+  }
+
+  .letter-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ─── DATE BADGE ─── */
+  .date-badge {
+    text-align: center;
+    padding: 36px 0 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .date-badge.reveal { opacity: 1; transform: translateY(0); }
+  .date-badge span {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ─── LETTER CARD ─── */
+  .letter-card {
+    background: linear-gradient(160deg, #2e1520 0%, #1e0c14 100%);
+    border: 1px solid #5a2535;
+    border-radius: 2px;
+    padding: 44px 36px 48px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+    box-shadow: 0 20px 80px #0006, inset 0 1px 0 #ffffff08;
+  }
+  .letter-card.reveal { opacity: 1; transform: translateY(0); }
+
+  /* paper texture overlay */
+  .letter-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, #ffffff03 27px, #ffffff03 28px);
+    pointer-events: none;
+  }
+
+  /* corner ornament */
+  .corner {
+    position: absolute;
+    width: 40px; height: 40px;
+    opacity: 0.25;
+  }
+  .corner-tl { top: 12px; left: 12px; border-top: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); }
+  .corner-tr { top: 12px; right: 12px; border-top: 1.5px solid var(--gold); border-right: 1.5px solid var(--gold); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 1.5px solid var(--gold); border-right: 1.5px solid var(--gold); }
+
+  .letter-salutation {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    color: var(--rose);
+    margin-bottom: 28px;
+    line-height: 1.2;
+  }
+
+  .letter-body p {
+    font-size: clamp(1rem, 3.8vw, 1.15rem);
+    font-weight: 300;
+    color: #e8d4c0;
+    line-height: 1.9;
+    margin-bottom: 22px;
+    font-style: italic;
+  }
+  .letter-body p.upright {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--cream);
+  }
+
+  .highlight {
+    color: var(--gold);
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  /* ─── DIVIDER ─── */
+  .ornament-div {
+    text-align: center;
+    color: var(--gold);
+    font-size: 18px;
+    margin: 28px 0;
+    letter-spacing: 12px;
+    opacity: 0.5;
+  }
+
+  /* ─── SIGNATURE ─── */
+  .signature-block {
+    margin-top: 36px;
+    text-align: right;
+  }
+  .sig-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: #c9748a88;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 6px;
+  }
+  .sig-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2.2rem, 9vw, 3rem);
+    color: var(--gold);
+    text-shadow: 0 0 30px #d4a96a55;
+  }
+
+  /* ─── BIRTHDAY BURST ─── */
+  .birthday-burst {
+    text-align: center;
+    margin: 44px 0 28px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .birthday-burst.reveal { opacity: 1; transform: scale(1); }
+  .burst-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--rose) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200%;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  /* ─── FLOATING HEARTS ─── */
+  .hearts-container {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .heart-float {
+    position: absolute;
+    bottom: -40px;
+    font-size: 14px;
+    opacity: 0;
+    animation: floatHeart linear infinite;
+  }
+  @keyframes floatHeart {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.6); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-110vh) rotate(720deg) scale(1); opacity: 0; }
+  }
+
+  /* ─── SCROLL REVEALS ─── */
+  .reveal-block {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal-block.reveal { opacity: 1; transform: translateY(0); }
+
+  /* ─── UTILITIES ─── */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── GOLD LINE SEPARATOR ─── */
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px 0;
+    opacity: 0.4;
+  }
+
+  /* tap ripple */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: #c9748a33;
+    transform: scale(0);
+    animation: ripple 0.7s linear;
+    pointer-events: none;
+  }
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ─── PETAL BURST (on open) ─── */
+  .petal {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    z-index: 20;
+    animation: petalBurst 1.2s ease-out forwards;
+  }
+  @keyframes petalBurst {
+    0%   { transform: translate(0,0) scale(0); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(var(--dr)); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="hearts-container" id="heartsContainer"></div>
+
+<!-- ═══ LANDING ═══ -->
+<div id="landing">
+  <div class="envelope-wrap">
+    <div class="envelope">
+      <div class="env-body"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal">✦</div>
+    </div>
+  </div>
+  <div class="landing-sub">Mohsin has a message for you</div>
+  <div class="landing-title">Something special awaits you…</div>
+  <div class="landing-hint">a letter, just for you</div>
+  <button class="open-btn" id="openBtn" onclick="openLetter(event)">Open Message</button>
+</div>
+
+<!-- ═══ LETTER PAGE ═══ -->
+<div id="letter-page">
+  <div class="ribbon"></div>
+
+  <div class="letter-container">
+
+    <div class="date-badge" id="dateBadge">
+      <span id="todayDate"></span>
+    </div>
+
+    <div class="letter-card" id="letterCard">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div class="letter-salutation">To the most special person,</div>
+
+      <div class="letter-body">
+        <p>
+          Okay, I'm not going to lie — I rewrote this about four times
+          and deleted everything. So just bear with me.
+        </p>
+
+        <p class="upright">
+          I don't really do this kind of thing. But it's your birthday,
+          and for once I actually wanted to say something instead of
+          just letting the day pass like I normally would.
+        </p>
+
+        <div class="ornament-div">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+        <p>
+          You're one of those people who just — I don't know how to explain it —
+          you make everything around you feel warmer. You're kind,
+          genuinely kind, not the kind people perform for others.
+          And you're so full of life. Colorful in a way that not many people are.
+          Like wherever you go, the room just feels a little more alive.
+        </p>
+
+        <p class="upright">
+          I notice these things. I just don't always say them.
+          And honestly, you deserve to hear it more than you do.
+        </p>
+
+        <div class="gold-line"></div>
+
+        <p>
+          So here it is — you're someone really special.
+          Not in a general way. Specifically you.
+          The way you are, the way you carry yourself,
+          the way you're charming without even trying.
+          All of it.
+        </p>
+
+        <p class="upright">
+          I hope today is as bright and colorful as you are.
+          I hope this year gives you everything you've been waiting for —
+          and a few things you weren't even expecting. 🎂
+        </p>
+
+        <p style="color: var(--rose); font-style: italic;">
+          Have the best birthday. You really deserve it.
+        </p>
+      </div>
+
+      <div class="signature-block">
+        <div class="sig-label">With warmth,</div>
+        <div class="sig-name">Mohsin</div>
+      </div>
+    </div>
+
+    <div class="birthday-burst" id="burst">
+      <div class="burst-text">Happy Birthday 🎂✨</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  AUDIO — Web Audio API only, no files
+// ═══════════════════════════════════════════
+let audioCtx = null;
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playChime(freq = 523, dur = 0.6, vol = 0.18, delay = 0) {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur + 0.1);
+  } catch(e){}
+}
+
+function playOpenFanfare() {
+  // Gentle ascending chime sequence — like a music box
+  const notes = [523.25, 659.25, 783.99, 1046.50, 880, 1174.66];
+  notes.forEach((f, i) => playChime(f, 0.8, 0.13, i * 0.14));
+}
+
+function playRevealTone() {
+  // Soft single bell when letter reveals
+  playChime(880, 1.2, 0.12);
+  setTimeout(() => playChime(1108.73, 0.9, 0.08), 300);
+}
+
+function playHeartTone() {
+  playChime(659.25, 0.4, 0.06);
+}
+
+function playScrollTone() {
+  playChime(783.99, 0.35, 0.05);
+}
+
+// ═══════════════════════════════════════════
+//  PARTICLES
+// ═══════════════════════════════════════════
+const canvas = document.getElementById('particles');
+const ctx2 = canvas.getContext('2d');
+let particles = [];
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function createParticle() {
+  return {
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: Math.random() * 1.8 + 0.4,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: -(Math.random() * 0.4 + 0.1),
+    alpha: Math.random() * 0.5 + 0.1,
+    color: Math.random() < 0.5 ? '#c9748a' : '#d4a96a',
+    life: Math.random()
+  };
+}
+for (let i = 0; i < 80; i++) particles.push(createParticle());
+
+function animParticles() {
+  ctx2.clearRect(0, 0, W, H);
+  particles.forEach((p, i) => {
+    p.x += p.vx; p.y += p.vy; p.life += 0.003;
+    if (p.life > 1 || p.y < -10) { particles[i] = createParticle(); particles[i].y = H + 10; return; }
+    ctx2.beginPath();
+    ctx2.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx2.fillStyle = p.color + Math.floor(p.alpha * 255).toString(16).padStart(2,'0');
+    ctx2.fill();
+  });
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+// ═══════════════════════════════════════════
+//  FLOATING HEARTS
+// ═══════════════════════════════════════════
+const heartsContainer = document.getElementById('heartsContainer');
+const heartEmojis = ['🌹','✨','🌸','💫','🎀','🌺'];
+let heartsActive = false;
+
+function spawnHeart() {
+  if (!heartsActive) return;
+  const h = document.createElement('div');
+  h.className = 'heart-float';
+  h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+  h.style.left = Math.random() * 100 + 'vw';
+  const dur = 7 + Math.random() * 8;
+  h.style.animationDuration = dur + 's';
+  h.style.animationDelay = Math.random() * 2 + 's';
+  h.style.fontSize = (11 + Math.random() * 14) + 'px';
+  heartsContainer.appendChild(h);
+  setTimeout(() => h.remove(), (dur + 3) * 1000);
+}
+
+function startHearts() {
+  heartsActive = true;
+  for (let i = 0; i < 10; i++) setTimeout(spawnHeart, i * 400);
+  setInterval(spawnHeart, 1200);
+}
+
+// ═══════════════════════════════════════════
+//  PETAL BURST
+// ═══════════════════════════════════════════
+function burstPetals(cx, cy) {
+  const items = ['🌸','✨','🌹','🎀','💫','🌺','⭐'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = items[Math.floor(Math.random() * items.length)];
+    p.style.left = cx + 'px';
+    p.style.top  = cy + 'px';
+    const angle = (Math.PI * 2 / 18) * i + (Math.random() - 0.5) * 0.5;
+    const dist  = 100 + Math.random() * 140;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    p.style.setProperty('--dr', (Math.random() * 360 - 180) + 'deg');
+    p.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  RIPPLE ON BUTTON
+// ═══════════════════════════════════════════
+function addRipple(e, el) {
+  const rect = el.getBoundingClientRect();
+  const x = (e.clientX || e.touches?.[0]?.clientX || rect.left + rect.width/2) - rect.left;
+  const y = (e.clientY || e.touches?.[0]?.clientY || rect.top + rect.height/2) - rect.top;
+  const r = document.createElement('span');
+  r.className = 'ripple-effect';
+  r.style.cssText = `width:${rect.width}px;height:${rect.width}px;left:${x - rect.width/2}px;top:${y - rect.width/2}px;`;
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 800);
+}
+
+// ═══════════════════════════════════════════
+//  SET DATE
+// ═══════════════════════════════════════════
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const now = new Date();
+document.getElementById('todayDate').textContent = 'April 26, ' + now.getFullYear();
+
+// ═══════════════════════════════════════════
+//  OPEN LETTER
+// ═══════════════════════════════════════════
+let opened = false;
+function openLetter(e) {
+  if (opened) return;
+  opened = true;
+
+  const btn = document.getElementById('openBtn');
+  addRipple(e, btn);
+
+  // Petal burst at center of envelope
+  const wrap = document.querySelector('.envelope-wrap');
+  const r = wrap.getBoundingClientRect();
+  burstPetals(r.left + r.width / 2, r.top + r.height / 2);
+
+  // Sound
+  playOpenFanfare();
+
+  // Hide landing
+  document.getElementById('landing').classList.add('hide');
+
+  // Show letter page
+  const lp = document.getElementById('letter-page');
+  lp.style.display = 'block';
+  setTimeout(() => lp.classList.add('visible'), 100);
+
+  // Staggered reveals
+  setTimeout(() => {
+    document.getElementById('dateBadge').classList.add('reveal');
+    playRevealTone();
+  }, 600);
+  setTimeout(() => {
+    document.getElementById('letterCard').classList.add('reveal');
+  }, 900);
+  setTimeout(() => {
+    document.getElementById('burst').classList.add('reveal');
+    startHearts();
+    playChime(1046.5, 1.5, 0.15);
+  }, 1800);
+
+  // Vibrate on open (mobile)
+  if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+}
+
+// ═══════════════════════════════════════════
+//  SCROLL REVEAL OBSERVER
+// ═══════════════════════════════════════════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.classList.add('reveal');
+      playScrollTone();
+      observer.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal-block').forEach(el => observer.observe(el));
+
+// ═══════════════════════════════════════════
+//  LETTER CARD SPARKLE ON TAP
+// ═══════════════════════════════════════════
+document.getElementById('letterCard').addEventListener('click', function(e) {
+  burstPetals(e.clientX, e.clientY);
+  playHeartTone();
+  if (navigator.vibrate) navigator.vibrate(15);
+});
+</script>
+</body>
+</html>
