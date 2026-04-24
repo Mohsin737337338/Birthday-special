@@ -432,6 +432,45 @@
   margin-top: 10px; display: none;
   padding-bottom: 4px;
 }
+ #secret-page {
+  display: none;
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+.back-btn {
+  display: block;
+  margin: 32px auto 0;
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid var(--rose);
+  color: var(--rose);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.back-btn:active { background: var(--rose); color: #fff; }
+.complaint-btn {
+  display: block;
+  margin: 32px auto 60px;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.complaint-btn:active { background: var(--gold); color: var(--deep); }
 </style>
 </head>
 <body>
@@ -511,15 +550,16 @@
         <p class="upright">
           I hope today is as bright and colorful as you are.
           I hope this year gives you everything you've been waiting for.🎂
-          I would have put something else on the table, but is is your birthday so let's table it for now.
           One interesting thing, I designed this whole website or letter 
           or whatever it is, for you. I hope you will appreciate my hardwork😁
           Efforts check kro beta.
-          Agar message ya letter pe comment krna gunaa lag raha ho tou 
+          Agar message ya letter pe comment krna ho tou 
           I have put a comment section at the end of the letter, you can appreciate my efforts there😁
-          Your comment will directly come to my email, or you can message me on the same number, the chat is locked
-          Acha choro, baatein likhne laga yahan tou aik raat or lag jae gi, or mujhe sona bhi ha, so lets come back
-          to the main topic
+          One more thing I had a very little, actually very very little complaint, but filhaal tumhari birthday ha and
+          I cannot afford to ruin your mood at this moment so, there is a button there namely complaint, but I have programmed it in 
+          a way that ye 12pm yaani din ke time hi khule ga, tou you must see that complain too, vo button din 12 se raat bajy tak hi kaam
+          kre ga.
+          Lets come back to the main topic
         </p>
 
         <p style="color: var(--rose); font-style: italic;">
@@ -549,7 +589,51 @@
 
   </div>
 </div>
+<div id="secret-page">
+  <div class="ribbon"></div>
+  <div class="letter-container">
+    <div class="date-badge reveal" style="padding-top:36px;">
+      <span>A Complaint</span>
+    </div>
+    <div class="letter-card reveal">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+      <div class="letter-salutation">Listen,</div>
+      <div class="letter-body">
+        <p>
+         Yar mene apni ammi se sab suna, what happened at that night and I truly understand everyhthing but aik baat samajh nahi aayi.
+        </p>
+        <div class="ornament-div">✦ &nbsp; ✦ &nbsp; ✦</div>
+        <p class="upright">
+         vo ye ke yaar block kyun kiya, like agar tum mujh se keh deti tou meh kabhi message hi na krta, yar tum mujhe bolo ke meh tumhein sari zindagi message na krun tou I won't.
+        </p>
+        <div class="gold-line"></div>
+        <p>
+          What you did was totally unfathomable and extremely ridiculous, I won't be much rude to you today because it is you birthday but yar
+          that wasn't a good idea
 
+         ghairon se kaha tumne ghairon se suna tumne
+         kuch hum se kaha hota, kuch hum se kaha hota
+         ik ishq ka gham aafat, or uss pe ye dil aafat
+         ya dil na diya hota ya gham na diya hota
+         bechen tamanna dil iss soch meh rehta ha
+         yun hota tou kya hota, yun na hota tou kya hota
+
+           Tumne bass aik message kiya or block kr diya, yar I would have been very rude with you agar tumhara birthday na hota, that was an utterly disaappointing act.
+        </p>
+      </div>
+      <div class="signature-block">
+        <div class="sig-label">Yours respectfully,</div>
+        <div class="sig-name">Mohsin</div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <button class="back-btn" onclick="closSecretPage()">← Go Back</button>
+    </div>
+  </div>
+</div>
 <script>
 // ═══════════════════════════════════════════
 //  AUDIO — Web Audio API only, no files
@@ -802,6 +886,24 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
   } catch(e) {
     btn.textContent = 'Try again'; btn.disabled = false;
   }
+}
+ function openSecretPage() {
+  const hour = new Date().getHours();
+  if (hour < 12 || hour >= 21) {
+    playChime(440, 0.5, 0.08);
+    alert("This opens later today... 🌸");
+    return;
+  }
+  document.getElementById('letter-page').style.display = 'none';
+  const sp = document.getElementById('secret-page');
+  sp.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  playOpenFanfare();
+}
+function closSecretPage() {
+  document.getElementById('secret-page').style.display = 'none';
+  document.getElementById('letter-page').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
