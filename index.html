@@ -788,7 +788,8 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
     if (res.ok) {
       document.getElementById('replySent').style.display = 'block';
       document.getElementById('replyText').value = '';
-      btn.style.display = 'none';
+      btn.textContent = 'Send ✦';
+      btn.disabled = false;
       playChime(880, 1.2, 0.12);
       if (navigator.vibrate) navigator.vibrate(20);
     } else {
