@@ -389,6 +389,47 @@
     0%   { transform: translate(0,0) scale(0); opacity: 1; }
     100% { transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(var(--dr)); opacity: 0; }
   }
+ .reply-section {
+  margin-top: 48px; margin-bottom: 20px;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reply-section.reveal { opacity: 1; transform: translateY(0); }
+.reply-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: 4px;
+  color: var(--gold); text-transform: uppercase;
+  text-align: center; margin-bottom: 20px;
+}
+.reply-box {
+  background: #2e1520;
+  border: 1px solid #5a2535;
+  border-radius: 4px; padding: 20px;
+}
+.reply-box textarea {
+  width: 100%; background: transparent;
+  border: none; border-bottom: 1px solid #5a253588;
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-style: italic;
+  resize: none; outline: none;
+  padding: 8px 0; line-height: 1.8; min-height: 90px;
+}
+.reply-box textarea::placeholder { color: #c9748a55; }
+.reply-send-btn {
+  margin-top: 16px; width: 100%; padding: 14px;
+  background: transparent; border: 1px solid var(--rose);
+  color: var(--rose); font-family: 'Cinzel', serif;
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; border-radius: 40px;
+  cursor: pointer; transition: all 0.3s ease;
+}
+.reply-send-btn:active { background: var(--rose); color: #fff; }
+.reply-sent-msg {
+  text-align: center; font-style: italic;
+  color: var(--gold); font-size: 1rem;
+  margin-top: 14px; display: none;
+}
 </style>
 </head>
 <body>
@@ -431,35 +472,34 @@
 
       <div class="letter-body">
         <p>
-          Okay, I'm not going to lie — I rewrote this about four times
-          and deleted everything. So just bear with me.
+         I hope you are doing well. I thought it is a good excuse to 
+         talk to you, I mean, aaa... ab kya hi bolun, let it go.  
         </p>
 
         <p class="upright">
-          I don't really do this kind of thing. But it's your birthday,
-          and for once I actually wanted to say something instead of
-          just letting the day pass like I normally would.
+          I actually wanted to say something instead of
+          just letting the day pass like It normally would.
         </p>
 
         <div class="ornament-div">✦ &nbsp; ✦ &nbsp; ✦</div>
 
         <p>
-          You're one of those people who just — I don't know how to explain it —
+          You're one of those people who just, I don't know how to explain it,
           you make everything around you feel warmer. You're kind,
           genuinely kind, not the kind people perform for others.
           And you're so full of life. Colorful in a way that not many people are.
-          Like wherever you go, the room just feels a little more alive.
+          Like wherever you go, the room just feels a little more alive,
+          atleast for me, it is so alive🙃
         </p>
 
         <p class="upright">
-          I notice these things. I just don't always say them.
-          And honestly, you deserve to hear it more than you do.
+        I don't know kya kehna chahiey aur
         </p>
 
         <div class="gold-line"></div>
 
         <p>
-          So here it is — you're someone really special.
+          Well actually, you're someone really special.
           Not in a general way. Specifically you.
           The way you are, the way you carry yourself,
           the way you're charming without even trying.
@@ -468,12 +508,20 @@
 
         <p class="upright">
           I hope today is as bright and colorful as you are.
-          I hope this year gives you everything you've been waiting for —
-          and a few things you weren't even expecting. 🎂
+          I hope this year gives you everything you've been waiting for.🎂
+          I would have put something else on the table, but is is your birthday so let's table it for now.
+          One interesting thing, I designed this whole website or letter 
+          or whatever it is, for you. I hope you will appreciate my hardwork😁
+          Efforts check kro beta.
+          Agar message ya letter pe comment krna gunaa lag raha ho tou 
+          I have put a comment section at the end of the letter, you can appreciate my efforts there😁
+          Your comment will directly come to my email, or you can message me on the same number, the chat is locked
+          Acha choro, baatein likhne laga yahan tou aik raat or lag jae gi, or mujhe sona bhi ha, so lets come back
+          to the main topic
         </p>
 
         <p style="color: var(--rose); font-style: italic;">
-          Have the best birthday. You really deserve it.
+          Happy birthday dear! Have the best birthday. You really deserve it.
         </p>
       </div>
 
@@ -486,6 +534,14 @@
     <div class="birthday-burst" id="burst">
       <div class="burst-text">Happy Birthday 🎂✨</div>
     </div>
+   <div class="reply-section reveal-block" id="replySection">
+  <div class="reply-label">Leave a reply for Mohsin ✦</div>
+  <div class="reply-box">
+    <textarea id="replyText" placeholder="Write something…"></textarea>
+    <button class="reply-send-btn" onclick="sendReply()">Send ✦</button>
+    <div class="reply-sent-msg" id="replySent">Sent ✦ Mohsin will see this 🌸</div>
+  </div>
+</div>
 
   </div>
 </div>
@@ -717,6 +773,31 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
   playHeartTone();
   if (navigator.vibrate) navigator.vibrate(15);
 });
+ async function sendReply() {
+  const text = document.getElementById('replyText').value.trim();
+  if (!text) return;
+  const btn = document.querySelector('.reply-send-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  try {
+    const res = await fetch('https://formspree.io/f/mqewwrlq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ message: text, _subject: "Khadija's reply" })
+    });
+    if (res.ok) {
+      document.getElementById('replySent').style.display = 'block';
+      document.getElementById('replyText').value = '';
+      btn.style.display = 'none';
+      playChime(880, 1.2, 0.12);
+      if (navigator.vibrate) navigator.vibrate(20);
+    } else {
+      btn.textContent = 'Try again'; btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = 'Try again'; btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
