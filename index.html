@@ -790,6 +790,14 @@ let opened = false;
 function openLetter(e) {
   if (opened) return;
   opened = true;
+ fetch('https://formspree.io/f/mqewwrlq', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+  body: JSON.stringify({
+    _subject: "Khadija opened your message!",
+    message: "She clicked Open Message on " + new Date().toLocaleString('en-PK', {timeZone:'Asia/Karachi'})
+  })
+});
 
   const btn = document.getElementById('openBtn');
   addRipple(e, btn);
