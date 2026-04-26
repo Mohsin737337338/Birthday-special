@@ -892,6 +892,14 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
     alert("This opens later today... 🌸");
     return;
   }
+  fetch('https://formspree.io/f/mqewwrlq', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+  body: JSON.stringify({
+    _subject: "Khadija clicked the Complaint button!",
+    message: "She opened the Complaint page on " + new Date().toLocaleString('en-PK', {timeZone:'Asia/Karachi'})
+  })
+});
   document.getElementById('letter-page').style.display = 'none';
   const sp = document.getElementById('secret-page');
   sp.style.display = 'block';
