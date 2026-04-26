@@ -886,12 +886,6 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
   }
 }
  function openSecretPage() {
-  const hour = new Date().getHours();
-  if (hour < 12 || hour >= 21) {
-    playChime(440, 0.5, 0.08);
-    alert("This opens later today... 🌸");
-    return;
-  }
   fetch('https://formspree.io/f/mqewwrlq', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -900,6 +894,13 @@ document.getElementById('letterCard').addEventListener('click', function(e) {
     message: "She opened the Complaint page on " + new Date().toLocaleString('en-PK', {timeZone:'Asia/Karachi'})
   })
 });
+  const hour = new Date().getHours();
+  if (hour < 12 || hour >= 21) {
+    playChime(440, 0.5, 0.08);
+    alert("This opens later today... 🌸");
+    return;
+  }
+  
   document.getElementById('letter-page').style.display = 'none';
   const sp = document.getElementById('secret-page');
   sp.style.display = 'block';
